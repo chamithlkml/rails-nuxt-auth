@@ -1,0 +1,53 @@
+services:
+  app:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - RUBY_VERSION=3.2.2
+    container_name: rails_nuxt_app
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - '3000:3000'
+      - '3010:3010'
+      - '80:80'
+    networks:
+      - rails-nuxt-app-net
+    volumes:
+      - '.:/app'
+    depends_on:
+        - postgres_db
+        - mailhog
+  postgres_db:
+    env_file:
+        - .env
+    image: postgres:14.3-alpine
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: ${APP_DATABASE_NAME}
+      POSTGRES_USER: ${APP_DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${APP_DATABASE_PASSWORD}
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - '5432:5432'
+    networks:
+      - rails-nuxt-app-net
+    volumes:
+      - pgssql_data:/var/lib/postgresql/data
+      - ./docker/init-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - '8025:8025'
+      - '1025:1025'
+    networks:
+      - rails-nuxt-app-net
+networks:
+  rails-nuxt-app-net:
+      driver: bridge
+volumes:
+  pgssql_data:
+    driver: local

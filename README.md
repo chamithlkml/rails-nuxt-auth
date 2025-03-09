@@ -1,0 +1,2 @@
+# Rails Nuxt authentication implementation
+
