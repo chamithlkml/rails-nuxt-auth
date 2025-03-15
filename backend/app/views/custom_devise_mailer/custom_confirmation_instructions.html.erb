@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+  <h1>Welcome</h1>
+  <p>Welcome <%= @resource.name %>!</p>
+  <p>To confirm your account, please click the link below:</p>
+  <%= link_to 'Confirm my account', (Rails.env.production? ? "https://#{ENV['APP_DOMAIN']}/merchant_users/confirm?confirmation_token=#{@token}" : "#{ENV['NUXT_APP_URL']}/users/confirm?confirmation_token=#{@token}") %>
+</body>
+</html>

@@ -31,9 +31,11 @@ RUN cd /app/backend && bundle install && \
   rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
   bundle exec bootsnap precompile --gemfile
 
+RUN mkdir -p /app/frontend
+
 # Install node modules
-# COPY package.json yarn.lock ./
-# RUN yarn install --frozen-lockfile
+COPY ./frontend/package.json ./frontend/package-lock.json /app/frontend/
+RUN cd /app/frontend && npm install
 
 # Copy application code
 COPY . .
